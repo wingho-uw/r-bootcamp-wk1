@@ -1,0 +1,8 @@
+install.packages("tidyverse")
+install.packages("rmarkdown")
+install.packages("writexl")
+install.packages("svglite")
+install.packages("car")
+install.packages("carData")
+install.packages("pwr")
+install.packages("vegan")
