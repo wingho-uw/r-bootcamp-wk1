@@ -1,6 +1,7 @@
 install.packages("tidyverse")
 install.packages("rmarkdown")
 install.packages("writexl")
+install.packages("janitor")
 install.packages("svglite")
 install.packages("car")
 install.packages("carData")

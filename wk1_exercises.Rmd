@@ -1,0 +1,31 @@
+---
+title: "week 1 exercises"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Exercise 1. R Markdown file
+
+Create an R markdown file that, when knitted to an html documents, gives the same output as the file `R_markdown_exercise.html` (If you have Microsoft Word, check also that the output when knitted to Word agrees with `R_markdown_exercise.docx` )
+
+### Exercise 2. Navigating folder structure
+
+(See the exercise on Google Slides)
+
+### Exercise 3. Rows and column operations
+
+1. Load the Palmer penguin data as a dataframe named `penguins` (do this in whichever way you prefer)
+
+2. Select only the penguins that resides in Biscoe Island. Assign the result to a new dataframe called `Biscoe`, show a random sample of entries from this dataframe.
+
+3. How many penguins are recorded on the Biscoe island?
+
+4. Go back to the `penguins` dataframe. Convert the body mass column to using kg as unit. Rename the column appropriately (the resulting dataframe should overwrite the previous one, i.e., name the result as `penguins`). Show the first few rows of the result
+
+5. Define a new column called `bill_ratio`, which is defined as bill depth divided by bill length, and drop the sex column. Again overwrite the previous dataframe.
+
+6. What species of penguins appear in the database? And for each species, which islands do they reside in? 
+

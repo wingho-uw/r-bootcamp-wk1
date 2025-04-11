@@ -1,0 +1,234 @@
+---
+title: "R Dataframe Demo"
+author: "Wing-Ho Ko"
+output:
+  html_notebook: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Loading packages for use
+
+We'll load `readr` for importing external data as dataframes, `dplyr` for dataframe manipulation, and `car` for random sampling of dataframe.
+
+When a package is loaded using the `library()` function, the functions it defines become available in the workspace and can be called directly. 
+
+```{r}
+library(readr)
+library(dplyr)
+library(car)
+```
+
+### Loading external data into a dataframe
+
+As a demonstration, we'll load the Palmer penguins dataset in both online and offline manner.
+
+To load the file directly from the internet, we note that the raw csv file can be reached from the link <https://raw.githubusercontent.com/allisonhorst/palmerpenguins/refs/heads/main/inst/extdata/penguins.csv>. Using this as the argument to `read_csv()`, we do:
+
+```{r}
+read_csv("https://raw.githubusercontent.com/allisonhorst/palmerpenguins/refs/heads/main/inst/extdata/penguins.csv")
+```
+
+Alternatively, a copy of the csv file is included in this week's github repo under the `data` folder. After that, we can load the file via:
+
+```{r}
+read_csv("data/penguins.csv")
+```
+
+As with other data structure, you can assign a dataframe to a variable for future use and manipulation. In our case, we may do:
+
+```{r}
+penguins <- read_csv("data/penguins.csv")
+```
+
+### Inspecting a dataframe
+
+Unlike csv or other pure text data format, each column of a dataframe has a specific data type. To inspect that, use the `glimpse()` function from `dplyr`, which also display useful information such as the number of rows and columns, as well as a preview of the data
+
+```{r}
+glimpse(penguins)
+```
+
+In addition, if you just want to sample some rows from the dataframe, you can use `head()`, `tail()`, and (with the `car` package) `some()`
+
+```{r}
+head(penguins)
+```
+
+```{r}
+tail(penguins)
+```
+
+```{r}
+some(penguins)
+```
+
+To get the number of rows and columns programmatically (i.e., assignable to variables and thus can be further manipulated), use `nrow()` and `ncol()`
+
+```{r}
+nr <- nrow(penguins)
+nc <- ncol(penguins)
+
+print(c(nr, nc))
+```
+
+### Column operations
+
+Load some data from the `nycflight23` package
+
+```{r}
+library(nycflights23)
+glimpse(flights)
+```
+
+Sample some rows for the dataframe to get a sense of the data
+
+```{r}
+some(flights)
+```
+
+#### `select()`
+
+Extract only a few columns from the above dataframe, as store the result in `flights_sub`
+
+Note that dataframes are "immutable". This means that you should treat `flights` and `flights_sub` as completely independent of each other.
+
+```{r}
+flights_sub <- select(flights, 
+  c("carrier", "flight", "origin", "dest", "air_time", "distance"))
+some(flights_sub)
+```
+
+Alternative syntax (often more convenient). Notice that column names are being treated like variable in this form
+
+```{r}
+flights_sub <- select(flights, carrier:flight | origin:distance)
+some(flights_sub)
+```
+
+#### `mutate()`
+
+Define a new column using `mutate()`
+
+```{r}
+flights_new <- mutate(flights_sub, speed = distance / air_time)
+some(flights_new)
+```
+
+If the named argument coincide with the name of an existing column, the existing column is being overwritten instead
+
+```{r}
+flights_new <- mutate(flights_new, flight = as.character(flight))
+some(flights_new)
+```
+
+#### `rename()` and `relocate()`
+
+Rename a column:
+
+```{r}
+flights_new <- rename(flights_new, destination=dest)
+some(flights_new)
+```
+
+reorder columns using relocate:
+
+```{r}
+flights_new <- relocate(flights_new, speed, .before = air_time)
+some(flights_new)
+```
+
+Perform the above transformations on our dataframe in one go, and using the pipe operator `|>`
+
+```{r}
+flights_chained <- flights |> select(carrier:flight | origin:distance) |> 
+  mutate(speed = distance / air_time) |>
+  mutate(flight = as.character(flight)) |>
+  rename(destination=dest) |>
+  relocate(speed, .before = air_time)
+
+some(flights_chained)
+```
+
+### Row operations
+
+#### `filter()`
+
+Filter rows of a dataframe
+
+```{r}
+flights |> filter(dep_delay > 240)
+```
+
+Filter rows of a dataframe using compound conditions
+
+```{r}
+flights |> filter(dep_delay > 240 & arr_delay > 240)
+```
+
+#### `arrange()`
+
+Arrange the rows of a dataframe by the value of a single column
+
+```{r}
+flights |> arrange(carrier)
+```
+
+Arrange the rows of a dataframe by a cascading set of columns
+
+```{r}
+flights |> arrange(carrier, flight)
+```
+
+Display the most delayed flight by sorting departure delay in _descending_ order
+
+```{r}
+flights |> arrange(desc(dep_delay)) |> head()
+```
+
+#### `distinct()`
+
+Extract unique combination of carrier and flight number
+
+```{r}
+flights |> distinct(carrier, flight)
+```
+
+Extract the first flight for each combination of carrier and flight number
+
+```{r}
+flights |> arrange(time_hour, minute) |>
+  distinct(carrier, flight, .keep_all=TRUE)
+```
+
+### Saving dataframe to .csv file or .rds file
+
+Create the dataframe to be saved
+
+```{r}
+flights_LGA_delay <- flights |> 
+  select(carrier:flight | origin:dest | dep_delay | arr_delay | time_hour) |>
+  filter(origin == "LGA" & dep_delay > 240)
+```
+
+Export the dataframe as a .csv file
+
+```{r}
+write_csv(flights_LGA_delay, "flights_LGA_delay.csv")
+```
+
+Export the dataframe to R native .rds file
+
+```{r}
+write_rds(flights_LGA_delay, "flights_LGA_delay.rda")
+```
+
+Load the saved rds file
+
+```{r}
+filghts_from_rds <- read_rds("flights_LGA_delay.rda")
+some(filghts_from_rds)
+```

@@ -1,0 +1,58 @@
+---
+title: "R Markdown Demo"
+author: "Wing-Ho Ko"
+output:
+  word_document: default
+  html_notebook: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+R markdown allows you to interleave ordinary texts with R code. To insert a code chunk, use `Ctrl+Alt+I` (Windows and Linux) or `Cmd+Option+I` (mac). To execute the code chunk, use `Ctrl+Shift+Enter` (Windows and Linux) or `Cmd+Shift+Return` (mac)
+
+```{r}
+15 + 6
+```
+
+You will notice that the result of execution is included in the document itself.
+
+## Order of exceution
+
+Importantly, the order of execution is determined by the order that the chunks are run and not by the order they appear in the document. For example, if you run the fourth chunk below before the third chunk, you'll get a different result then running all chucks in the order they appear (the `<-` below is the **assignment operator** in R):
+
+```{r}
+x <- 3
+```
+
+```{r}
+x + 3
+```
+
+```{r}
+x <- 4
+```
+
+```{r}
+x / 4
+```
+
+## Knitting with markdown formatting
+
+An R markdown file can be "knitted" into various output format such as pdf and docx. To do so, click the **Knit** button on top, and (if there are no errors) a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. Note that in this case, the code chunks _are_ run from top to bottom.
+
+In addition to knitted, a notebook can also be previewed as an html document using the same button group.
+
+When knitted, the texts that are not R codes are interpreted as markdown texts, and are formatted accordingly in the output document. Some markdown notion we'll use:
+
+ + various headings are created by starting a line with sequence of `#`
+ + texts are boldfaced when surrounded by `**`
+ + texts are italicized when surrounded by `_`
+ + Variable and function names are surrounded by `
+ 
+ 
