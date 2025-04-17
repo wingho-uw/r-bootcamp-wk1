@@ -99,14 +99,14 @@ Note that dataframes are "immutable". This means that you should treat `flights`
 ```{r}
 flights_sub <- select(flights, 
   c("carrier", "flight", "origin", "dest", "air_time", "distance"))
-some(flights_sub)
+head(flights_sub)
 ```
 
 Alternative syntax (often more convenient). Notice that column names are being treated like variable in this form
 
 ```{r}
 flights_sub <- select(flights, carrier:flight | origin:distance)
-some(flights_sub)
+head(flights_sub)
 ```
 
 #### `mutate()`
